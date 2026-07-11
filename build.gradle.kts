@@ -63,8 +63,16 @@ dependencies {
 }
 
 java {
-    // sourceCompatibility = JavaVersion.VERSION_25
-    // targetCompatibility = JavaVersion.VERSION_25
+    // Explicitly pin source/target bytecode to Java 25 (class file major version 69).
+    // This must match the JDK actually running your Minecraft server. If your server's
+    // JVM is older than Java 25, loading this jar will throw:
+    //   java.lang.UnsupportedClassVersionError: ... has been compiled by a more recent
+    //   version of the Java Runtime (class file version 69.0), this version of the Java
+    //   Runtime only recognizes class file versions up to XX.0
+    // In that case, either upgrade the server JVM to 25+, or lower both of these
+    // (and the toolchain below) to match your server's JVM.
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(25))
