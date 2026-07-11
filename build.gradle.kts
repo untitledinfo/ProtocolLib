@@ -63,18 +63,23 @@ dependencies {
 }
 
 java {
-    // Paper/Spigot 1.21.x officially targets Java 21, not 25. Compiling to a higher class file
-    // version than the server's actual JVM causes:
-    //   java.lang.UnsupportedClassVersionError: ... class file version 69.0, this version of
-    //   the Java Runtime only recognizes class file versions up to XX.0
-    // Java 21 is the broadly-compatible choice for current Paper/Spigot 1.21.x servers. Only
-    // raise this if every server you deploy to is confirmed running Java 25+ (`java -version`
-    // from the exact script/service that launches the server, not just what's installed).
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    // MANDATORY: this must stay Java 25. The `mcVersion` above (26.2) pulls in
+    // org.spigotmc:spigot:26.2-R0.1-SNAPSHOT, whose NMS classes are compiled as Java 25
+    // bytecode (class file major version 69). javac physically cannot read class files newer
+    // than the JDK it's running on - so the compiler itself must run on JDK 25, or every
+    // NMS import in this project fails with "bad class file ... has wrong version 69.0".
+    // Do NOT lower this to "fix" a runtime UnsupportedClassVersionError - that error means the
+    // *server's* JVM is older than 25, which is a deployment-side problem, not a build setting.
+    // The only way to target an older JVM at runtime is to point `mcVersion` at an older
+    // Spigot/Paper release (e.g. "1.21.4") instead - but that requires re-validating every NMS
+    // class reference in this codebase against that version's mappings, since class names and
+    // packages differ between Minecraft versions. That's a much bigger change than a version
+    // bump; ask if you want that path instead.
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
 }
 

@@ -8,6 +8,27 @@ attribution details.
 ## Unreleased
 
 ### Fixed
+- **Reverted the Java 21 change below.** It broke the build entirely: `compileTestJava` failed
+  with 100 errors, all `bad class file ... has wrong version 69.0, should be 65.0`. Root cause:
+  `mcVersion = "26.2"` in `build.gradle.kts` depends on `org.spigotmc:spigot:26.2-R0.1-SNAPSHOT`,
+  whose NMS classes are Java 25 bytecode. `javac` cannot read class files newer than the JDK
+  it's running on, regardless of `sourceCompatibility`/`targetCompatibility` settings - so the
+  **compiler itself must run on JDK 25** as long as this project depends on Minecraft 26.2's
+  internals. `sourceCompatibility`, `targetCompatibility`, and the Gradle toolchain are back to
+  Java 25 in `build.gradle.kts`, and `.github/workflows/build.yml` / `dev-build.yml` runner JDK
+  is back to 25.
+  - **Important distinction:** requiring JDK 25 to *build* this project is separate from what
+    JVM a *deployed server* needs. If you're seeing `UnsupportedClassVersionError` at runtime
+    on an actual server (not in CI), that means that server's JVM is older than 25 - a
+    deployment-side fix (upgrade that server's Java), not something to "fix" by lowering the
+    build target again, since doing so just breaks compilation instead (as this entry shows).
+  - The only way to target an older JVM's bytecode at both build and run time is to point
+    `mcVersion` at an older Spigot/Paper release (e.g. `"1.21.4"`) instead of `"26.2"` - but
+    that requires re-validating every NMS class reference in this codebase against that
+    version's actual mappings, since class names/packages differ between Minecraft versions.
+    That's a substantially larger change than a version-number edit; treat it as a separate task.
+
+### Previous (incorrect) attempt, kept for context
 - **Class file version mismatch causing `UnsupportedClassVersionError` (class file major
   version 69) on Paper 1.21.4 servers.** The previous entry in this changelog pinned the build
   to Java 25 (class file version 69), which only works if the server's actual JVM is 25+. Paper
