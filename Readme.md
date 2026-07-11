@@ -1,4 +1,10 @@
-# ProtocolLib
+# ProtocolLib 2
+
+> **This is a fork of [ProtocolLib](https://github.com/dmulloy2/ProtocolLib) maintained by Firepdx.**
+> All original work and credit belongs to Dan Mulloy ([dmulloy2](https://github.com/dmulloy2)) and the
+> ProtocolLib contributors. This fork keeps the original GPLv2 license and copyright notices intact
+> (see `License.txt`) and is not affiliated with or endorsed by the upstream project. The in-game
+> plugin name remains `ProtocolLib` for compatibility with other plugins that depend on it.
 
 Certain tasks are impossible to perform with the standard Bukkit API, and may require
 working with and even modifying Minecraft directly. A common technique is to modify incoming
@@ -20,7 +26,7 @@ lead to more subtle bugs.
 
 ### Compilation
 
-ProtocolLib is built with [Gradle](https://gradle.org/). If you have it installed, just run
+ProtocolLib 2 is built with [Gradle](https://gradle.org/). If you have it installed, just run
 `./gradlew build` in the root project folder. Other gradle targets you may be interested in 
 include `clean`, `test`, and `shadowJar`. `shadowJar` will create a jar with all dependencies
 (ByteBuddy) included.

@@ -1,4 +1,4 @@
-name: ProtocolLib development build
+name: ProtocolLib 2 development build
 
 on:
   push:
@@ -28,8 +28,8 @@ jobs:
       - name: Upload plugin file
         uses: actions/upload-artifact@v4
         with:
-          name: ProtocolLib
-          path: build/libs/ProtocolLib.jar
+          name: ProtocolLib2
+          path: build/libs/ProtocolLib2.jar
 
       - name: Create or update GitHub pre-release
         env:
@@ -42,4 +42,4 @@ jobs:
             gh release create dev-build --prerelease --title "Development Build" --notes "## Changelog" --repo ${{ github.repository }}
           NEW_NOTES="$RELEASE_NOTES"$'\n'"* [$SHORT_HASH] $COMMIT_MSG"
           gh release edit dev-build --notes "$NEW_NOTES" --repo ${{ github.repository }}
-          gh release upload dev-build build/libs/ProtocolLib.jar#ProtocolLib.jar --clobber --repo ${{ github.repository }}
+          gh release upload dev-build build/libs/ProtocolLib2.jar#ProtocolLib2.jar --clobber --repo ${{ github.repository }}

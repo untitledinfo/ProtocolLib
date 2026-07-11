@@ -476,6 +476,60 @@ public class PacketContainer extends AbstractStructure implements Serializable {
         return method;
     }
 
+    /**
+     * Applies an arbitrary modification to this packet's generic {@link StructureModifier} and returns this
+     * container, allowing calls to be chained fluently.
+     * <p>
+     * Example:
+     * <pre><code>
+     * PacketContainer packet = new PacketContainer(PacketType.Play.Server.CHAT)
+     *     .withModification(mod -&gt; mod.write(0, "Hello"))
+     *     .withModification(mod -&gt; mod.write(1, uuid));
+     * </code></pre>
+     *
+     * @param modification a function that mutates this packet's {@link #getModifier() generic modifier}
+     * @return this packet container, for chaining
+     */
+    public PacketContainer withModification(java.util.function.Consumer<StructureModifier<Object>> modification) {
+        modification.accept(this.getModifier());
+        return this;
+    }
+
+    /**
+     * Produces a human-readable, multi-line summary of this packet's type and every readable field value, intended
+     * for logging/debugging during plugin development. This is deliberately more verbose than {@link #toString()}.
+     * <p>
+     * Field values that cannot be read (e.g. due to version differences) are shown as {@code <unreadable>} rather
+     * than throwing, so this method is always safe to call.
+     *
+     * @return a debug-friendly, multi-line description of this packet
+     */
+    public String toDebugString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("PacketContainer[type=").append(type).append("]\n");
+
+        StructureModifier<Object> modifier = this.getModifier();
+        int fieldCount = modifier.size();
+
+        if (fieldCount == 0) {
+            builder.append("  (no fields)\n");
+            return builder.toString();
+        }
+
+        for (int i = 0; i < fieldCount; i++) {
+            builder.append("  [").append(i).append("] ");
+            try {
+                Object value = modifier.readSafely(i);
+                builder.append(value != null ? value : "null");
+            } catch (Exception e) {
+                builder.append("<unreadable: ").append(e.getClass().getSimpleName()).append('>');
+            }
+            builder.append('\n');
+        }
+
+        return builder.toString();
+    }
+
     @Override
     public String toString() {
         return "PacketContainer[type=" + type + ", structureModifier=" + structureModifier + "]";

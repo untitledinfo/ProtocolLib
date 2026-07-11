@@ -107,7 +107,7 @@ tasks {
             )
         }
 
-        archiveFileName = "ProtocolLib.jar"
+        archiveFileName = "ProtocolLib2.jar"
     }
 
     /*remap {
@@ -151,6 +151,12 @@ mavenPublishing {
                 name.set("Dan Mulloy")
                 url.set("https://dmulloy2.net/")
                 email.set("dev@dmulloy2.net")
+            }
+            developer {
+                id.set("Firepdx")
+                name.set("Firepdx")
+                url.set("https://pgcmc.fun/")
+                roles.set(listOf("Fork maintainer"))
             }
         }
 

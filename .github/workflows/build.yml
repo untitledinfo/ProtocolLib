@@ -1,4 +1,4 @@
-name: ProtocolLib full build lifecycle
+name: ProtocolLib 2 full build lifecycle
 
 on:
   push:
@@ -26,5 +26,5 @@ jobs:
       - name: Upload plugin file
         uses: actions/upload-artifact@v4
         with:
-          name: ProtocolLib
-          path: build/libs/ProtocolLib.jar
+          name: ProtocolLib2
+          path: build/libs/ProtocolLib2.jar

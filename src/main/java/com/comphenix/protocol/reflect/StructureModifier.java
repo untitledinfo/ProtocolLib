@@ -291,6 +291,22 @@ public class StructureModifier<T> {
         return Optional.ofNullable(this.readSafely(fieldIndex));
     }
 
+    /**
+     * Reads the value of a field only if it exists, otherwise returns the supplied default.
+     * <p>
+     * Shorthand for {@code optionRead(fieldIndex).orElse(defaultValue)}, useful when writing code that must behave
+     * consistently across Minecraft versions where a given field may or may not be present.
+     *
+     * @param fieldIndex   index of the field
+     * @param defaultValue value to return if the field does not exist
+     * @return the value of the field, or {@code defaultValue} if it doesn't exist
+     * @see #optionRead(int)
+     */
+    public T readOr(int fieldIndex, T defaultValue) {
+        T value = this.readSafely(fieldIndex);
+        return value != null ? value : defaultValue;
+    }
+
     @SuppressWarnings("unchecked")
     private T readInternal(FieldAccessor accessor) {
         // just return null if the accessor is null
